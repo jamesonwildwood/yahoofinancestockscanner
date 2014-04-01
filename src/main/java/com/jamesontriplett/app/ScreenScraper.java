@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -62,8 +63,8 @@ public class ScreenScraper {
 			if (f.exists()) {
 
 				System.out.println("Using input file = " + inputfile);
-				List<Map<String, String>> myInput = getInputFromCSV(f);
-				List<Map<String, String>> rawdata = getData(myInput);
+				List<CSVRecord> myInput = getInputFromCSV(f);
+				List<Map<String, String>> rawdata = getDataFromRecord(myInput);
 				// Printing the output to a CVS file.
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 						"yyyyMMdd-hhmm");
@@ -92,34 +93,29 @@ public class ScreenScraper {
 		}
 	}
 
-	public static List<Map<String, String>> getData(
-			List<Map<String, String>> input) {
+	public static List<Map<String, String>> getDataFromRecord(
+			List<CSVRecord> input) {
 		List<Map<String, String>> output = new ArrayList<Map<String, String>>();
 		String symbol;
 		Map<String, String> filledMap;
-		Map<String, String> PreMap;
+		CSVRecord PreMap;
 		System.out.println("Got " + input.size() + " Symbols, Processed: ");
-		Iterator<Map<String, String>> iterator = input.iterator();
+		Iterator<CSVRecord> iterator = input.iterator();
 		while (iterator.hasNext()) {
 			PreMap = iterator.next();
 			symbol = PreMap.get(SYMBOL);
+			//Go Scrape All the Data
 			filledMap = getDataBySymbol(symbol);
-			if (PreMap.size() > 1) {
-				Set<String> keySet = PreMap.keySet();
-				String key;
-				for (Iterator<String> keyItr = keySet.iterator(); keyItr
-						.hasNext();) {
-					key = keyItr.next();
-					filledMap.put(key, PreMap.get(key));
-				}
-			}
+			//Merge the CSVRecord into the FilledMap
+			filledMap.putAll(PreMap.toMap());
+			//add it to the output list
 			output.add(filledMap);
 			System.out.print("#");
 		}
 		// System.out.println(output);
 		return output;
-	}
-
+	}	
+	
 	private static Map<String, String> getDataBySymbol(String symbol) {
 
 		Map<String, String> map = new HashMap<String, String>();
@@ -176,46 +172,27 @@ public class ScreenScraper {
 		return null;
 	}
 
-	private static List<Map<String, String>> getInputFromCSV(File csvFile)
+	private static List<CSVRecord> getInputFromCSV(File csvFile)
 			throws IOException {
-		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		int SYMBOL_INDEX = -1;
 		FileReader fr = new FileReader(csvFile);
 		CSVParser csvp = new CSVParser(fr, CSVFormat.DEFAULT);
-		String[] line;
-		Map<String, String> headers = new HashMap<String, String>();
+		Map<String, Integer> headers = csvp.getHeaderMap();
 		
-		//Get the SYMBOL index in the CSV
-		if ((line = csvp.getLine()) != null) {
-			for (int i = 0; i < line.length; i++) {
-				headers.put(Integer.toString(i), line[i]);
-				if (line[i].equalsIgnoreCase(SYMBOL)) {
-					SYMBOL_INDEX = i;
-				}
-			}
+		//Get Header map and index of SYMBOL
+		try{
+			//Sole purpose of i is to check to see if Symbol exists
+			@SuppressWarnings("unused")
+			int i= headers.get(SYMBOL).intValue();
+			List<CSVRecord> list = csvp.getRecords();
+			csvp.close();
+			return list;
 		}
-		
-		//if SYMBOL isn't found, then take the first column by default
-		
-		if (SYMBOL_INDEX == -1) {
-			SYMBOL_INDEX = 0;
-			Map<String, String> map = new HashMap<String, String>();
-			map.put(SYMBOL, line[SYMBOL_INDEX]);
-			for (int i = 0; i < line.length; i++) {
-				map.put(headers.get(Integer.toString(i)), line[i]);
-			}
-			list.add(map);
+		catch(NullPointerException e){
+			System.err.println("No " + SYMBOL + " Column Found");
+			csvp.close();
+			throw new IOException("Invalid File Format");
 		}
-		//Copy all the rest of the columns into the map for putting back in later
-		while ((line = csvp.getLine()) != null) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put(SYMBOL, line[SYMBOL_INDEX]);
-			for (int i = 0; i < line.length; i++) {
-				map.put(headers.get(Integer.toString(i)), line[i]);
-			}
-			list.add(map);
-		}
-		return list;
+
 	}
 
 	private static void generateOutputCSV(String outputFilePath,
