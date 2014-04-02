@@ -49,9 +49,9 @@ public class AppTest
     public void testApp() throws FileNotFoundException
     {
     	PrintStream out = new PrintStream("inputtest.csv");
-    	out.println("Symbol");
-    	out.println("FLT");
-    	out.println("LL");
+    	out.println("Symbol,Nothing");
+    	out.println("FLT,xyz");
+    	out.println("LL,zyx");
     	out.close();
 
     	String [] args = {"-input", "inputtest.csv"};
