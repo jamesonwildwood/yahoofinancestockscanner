@@ -7,7 +7,9 @@
 	<version>1.0</version>
 	<name>yahoo-finance-stock-scraper</name>
 	<url>http://www.jamesontriplett.com</url>
-
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -27,6 +29,7 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>yahoo-finance-stock-scraper</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -47,6 +50,9 @@
 						<goals>
 							<goal>single</goal>
 						</goals>
+						<configuration>
+							<file>${finalName}.jar</file>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
