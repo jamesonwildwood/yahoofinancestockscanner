@@ -3,6 +3,7 @@ package com.jamesontriplett.app;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -58,4 +59,19 @@ public class AppTest
     	ScreenScraper.main(args);
         assertTrue( true );
     }
+    
+    public void testScrape(){
+    	String SYMBOL = ScreenScraper.SYMBOL;
+
+    	String desiredFields[] = ScreenScraper.desiredFields;
+    	
+    	YahooScreenScraper yss = new YahooScreenScraper(SYMBOL, desiredFields);
+    	Map<String,String> testMap = yss.getDataBySymbol("FLT");
+    	assertFalse(testMap.isEmpty());
+    	for(int i=0;i < desiredFields.length; i++){
+    	assertNotNull(testMap.get(desiredFields[i]));
+    	System.out.println(testMap.get(desiredFields[i]));
+    	}
+    }
+ 
 }

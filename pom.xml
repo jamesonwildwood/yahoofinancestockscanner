@@ -4,7 +4,7 @@
 	<groupId>com.jamesontriplett.app</groupId>
 	<artifactId>yahoo-finance-stock-scraper</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>yahoo-finance-stock-scraper</name>
 	<url>http://www.jamesontriplett.com</url>
 

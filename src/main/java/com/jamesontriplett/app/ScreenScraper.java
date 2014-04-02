@@ -29,9 +29,9 @@ import org.jsoup.select.Elements;
 public class ScreenScraper {
 
 	private static final String SERVICE = "http://finance.yahoo.com/q/ae?s=";
-	private static final String SYMBOL = "Symbol";
+	protected static final String SYMBOL = "Symbol";
 
-	private static String desiredFields[] = { "Earnings Est_No. of Analysts_3",
+	protected static String desiredFields[] = { "Earnings Est_No. of Analysts_3",
 			"Revenue Est_No. of Analysts_3", "Earnings History_EPS Est_3",
 			"Earnings History_EPS Est_4", "Earnings History_Surprise %_3",
 			"Earnings History_Surprise %_4", "Growth Est_Next Qtr._1",
