@@ -10,9 +10,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * Screen Scrapes Yahoo finance for stock information based on tickers and desired fields
+ * Uses tables and table parsing to do so.
+ * @author jamesontriplett
+ *
+ */
 public class YahooScreenScraper {
 	
 	
+	/**
+	 * @param sYMBOL The field name of Symbol, like symbol or ticker
+	 * @param desiredFields an array of the table fields to scrape
+	 */
 	public YahooScreenScraper(String sYMBOL, String[] desiredFields) {
 		super();
 		SYMBOL = sYMBOL;

@@ -100,6 +100,14 @@ public class ScreenScraper {
 
 	}
 
+	
+	
+	/**
+	 * Takes a list of CSVRecords and executes a scrape on all the records.
+	 * produces a List of Maps of all the new data
+	 * @param input A list of CSVRecords to process
+	 * @return
+	 */
 	public static List<Map<String, String>> getDataFromRecord(
 			List<CSVRecord> input) {
 		List<Map<String, String>> output = new ArrayList<Map<String, String>>();
@@ -167,7 +175,6 @@ public class ScreenScraper {
 			e1.printStackTrace();
 		}
 
-		// bug here
 		CSVParser csvp = new CSVParser(fr, CSVFormat.EXCEL.withHeader());
 		List<CSVRecord> list = csvp.getRecords();
 		Map<String, Integer> headers = csvp.getHeaderMap();
